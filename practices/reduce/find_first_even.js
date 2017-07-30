@@ -1,7 +1,11 @@
 'use strict';
 
 function find_first_even(collection) {
-  //在这里写入代码
+  let result;
+  collection.reverse().forEach(item => {
+    if(item % 2 === 0) result = item;
+  });
+  return result;
 }
 
 module.exports = find_first_even;
