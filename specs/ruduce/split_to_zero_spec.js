@@ -8,7 +8,6 @@ describe('split_to_zero', function () {
   var collection_b = [0.7, 0.4, 0.1, -0.2];
 
   it('根据给定数字无限分割至等于0', function() {
-
     var result = split_to_zero(0.8, 0.2);
     expect(result).toEqual(collection_a);
   });
