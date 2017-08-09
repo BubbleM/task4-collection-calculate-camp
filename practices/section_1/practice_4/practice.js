@@ -1,9 +1,20 @@
-function collect_same_elements(collection_a, object_b) {
-  let result = [];
-  collection_a.filter(item => {
-    if(collection_b.value.includes(item.key)) result.push(item.key);
-  })
-  return result;
+'use strict';
+
+function includes(collection, ch) {
+  for (let item of collection) {
+    if (item === ch) {
+      return true;
+    }
+  }
+  return false;
 }
 
-module.exports = collect_same_elements;
+module.exports = function collectSameElements(collectionA, objectB) {
+  let result = [];
+  for (let item of collectionA) {
+    if (includes(objectB.value, item.key)) {
+      result.push(item.key);
+    }
+  }
+  return result;
+}

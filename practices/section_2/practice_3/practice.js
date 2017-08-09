@@ -1,54 +1,63 @@
-function count_same_elements(collection) {
+'use strict';
+
+function split(item) {
+  if (item.includes('-')) {
+    let array = item.split('-');
+    return {name: array[0], summary: parseInt(array[1], 10)}
+  }
+  if (item.includes('[')) {
+    let name = item.charAt(0);
+    let summary = parseInt(item.substr(2, item.length - 1));
+    return {name, summary};
+  }
+  if (item.includes(':')) {
+    let array = item.split(':');
+    return {name: array[0], summary: parseInt(array[1], 10)}
+  }
+}
+
+function push(result, key, count) {
+  for (let i = 0; i < count; i++) {
+    result.push(key);
+  }
+}
+
+function expand(collection) {
   var result = [];
-  collection.filter((a) => {
-    if (filters(a)) {
-      let str = filters(a);
-      if (!exist(str.name, result, str.summary)) {
-        result.push({name: str.name, summary: str.summary});
-      }
+  for (let item of collection) {
+    if (item.length === 1) {
+      result.push(item);
     } else {
-      if (!exist(a, result, 1)) {
-        result.push({name: a, summary: 1});
-      }
+      let {name, summary} = split(item);
+      push(result, name, summary);
     }
-  })
+  }
   return result;
 }
 
-/*
- * 对数组中的元素进行过滤
- * */
-var filters = (str) => {
-  var strobj = {};
-  if (str[1] === '-') { // 处理'd-5'格式的数据
-    let strs = str.split('-');
-    strobj.name = strs[0];
-    strobj.summary = strs[1]-0; // 将字符串转换为数字
-    return strobj;
-  } else if (str[1] === ':') { // 处理'c:8'格式的字符串
-    let strs = str.split(':');
-    strobj.name = strs[0];
-    strobj.summary = strs[1]-0;
-    return strobj;
-  } else if (str[1] === '[') {　// 处理t[10]格式的字符串
-    let strs = str.split('[');
-    strobj.name = strs[0];
-    strobj.summary = strs[1].split(']')[0]-0;
-    return strobj;
+function find(collection, ch) {
+  for (let item of collection) {
+    if (item.name === ch) {
+      return item;
+    }
   }
-  else {
-    return false;
-  }
+  return null;
 }
 
-var exist = (a, arrObj, count) => {
-  var boolean = false;
-  arrObj.filter((item) => {
-    if (a === item.name) {
-      item.summary += count;
-      boolean = true;
+function summarize(collection) {
+  var result = [];
+  for (let item of collection) {
+    let obj = find(result, item);
+    if (obj) {
+      obj.summary++;
+    } else {
+      result.push({name: item, summary: 1});
     }
-  })
-  return boolean;
-};
-module.exports = count_same_elements;
+  }
+  return result;
+}
+
+module.exports = function countSameElements(collection) {
+  let expandedArray = expand(collection);
+  return summarize(expandedArray);
+}

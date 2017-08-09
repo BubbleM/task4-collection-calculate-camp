@@ -1,73 +1,75 @@
-function create_updated_collection(collection_a, object_b) {
-  var collectionC = countSameElements(collectionA);
-  collectionC.map((a) => {
-    if (exist1(a.key, objectB)) cut3_1(a);
-  })
-  return collectionC;
+'use strict';
+
+function split(item) {
+  let array = item.split('-');
+  return {key: array[0], count: parseInt(array[1], 10)}
 }
 
-/*
- * 统计出A集合中相同的元素的个数，形成C集合
- * */
-function countSameElements(collection) {
-  var result = [];
-  collection.filter((a) => {
-    if (!exist(a, result)) {
-      if (filter(a)) {
-        let str = filter(a);
-        result.push({key: str.key, count: str.count});
-      } else {
-        result.push({key: a, count: 1})
-      }
+function push(result, key, count) {
+  for (let i = 0; i < count; i++) {
+    result.push(key);
+  }
+}
+
+function expand(collection) {
+  let result = [];
+  for (let item of collection) {
+    if (item.length === 1) {
+      result.push(item);
+    } else {
+      let {key, count} = split(item);
+      push(result, key, count);
     }
-  })
+  }
   return result;
 }
 
-/*
- * 对数组中的元素进行过滤
- * */
-var filter = (str) => {
-  var strobj = {};
-  if (str.length !== 1) { // 处理'd-5'格式的数据
-    var strs = str.split('-');
-    strobj.key = strs[0];
-    strobj.count = strs[1]-0; // 将字符串转换为数字
-    return strobj;
-  } else {
-    return false;
-  }
-}
-
-/*
- * 如果当前数据a在对象数组里存在　则给当前对象的count+1 返回true
- * 否则返回false
- * */
-var exist = (a, arrObj) => {
-  var boolean = false;
-  arrObj.filter((item) => {
-    if (a === item.key) {
-      item.count++;
-      boolean = true;
+function find(collection, ch) {
+  for (let item of collection) {
+    if (item.key === ch) {
+      return item;
     }
-  })
-  return boolean;
-};
-
-
-/*
- * 对当前对象的count执行满3减1操作
- * @obj 对象形如{key: 'a', count: 3}
- * */
-let cut3_1 = (obj) => {
-  let count = Math.floor(obj.count / 3);
-  for (let i = 0; i < count; i++) {
-    obj.count--;
   }
+  return null;
 }
 
-let exist1 = (a, object) => {
-  if (object.value.indexOf(a) !== -1) return true;
-  return false
-};
-module.exports = create_updated_collection;
+function summarize(collection) {
+  var result = [];
+  for (let item of collection) {
+    let obj = find(result, item);
+    if (obj) {
+      obj.count++;
+    } else {
+      result.push({key: item, count: 1});
+    }
+  }
+  return result;
+}
+
+function includes(collection, ch) {
+  for (let item of collection) {
+    if (item === ch) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function discount(collection, promotionItems) {
+  let result = [];
+  for (let item of collection) {
+    let key = item.key;
+    let count = item.count;
+    if (includes(promotionItems, key)) {
+      count = count - Math.floor(count / 3);
+    }
+    result.push({key, count});
+  }
+  return result;
+}
+
+module.exports = function createUpdatedCollection(collectionA, objectB) {
+  let expandedArray = expand(collectionA);
+  let summarized = summarize(expandedArray);
+  return discount(summarized, objectB.value);
+}

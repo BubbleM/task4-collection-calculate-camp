@@ -1,41 +1,52 @@
-function count_same_elements(collection) {
-  var result = [];
-  collection.filter((a) => {
-    if (!exist(a, result)) {
-      if (filter(a)) {
-        let str = filter(a);
-        result.push({key: str.key, count: str.count});
-      } else {
-        result.push({key: a, count: 1})
-      }
-    }
-  })
-  return result;
+'use strict';
+
+function split(item) {
+  let array = item.split('-');
+  return {key: array[0], count: parseInt(array[1], 10)}
 }
 
-/*
- * 对数组中的元素进行过滤
- * */
-var filter = (str) => {
-  var strobj = {};
-  if (str.length !== 1) { // 处理'd-5'格式的数据
-    var strs = str.split('-');
-    strobj.key = strs[0];
-    strobj.count = strs[1]-0; // 将字符串转换为数字
-    return strobj;
-  } else {
-    return false;
+function push(result, key, count) {
+  for (let i = 0; i < count; i++) {
+    result.push(key);
   }
 }
 
-var exist = (a, arrObj) => {
-  var boolean = false;
-  arrObj.filter((item) => {
-    if (a === item.key) {
-      item.count++;
-      boolean = true;
+function expand(collection) {
+  var result = [];
+  for (let item of collection) {
+    if (item.length === 1) {
+      result.push(item);
+    } else {
+      let {key, count} = split(item);
+      push(result, key, count);
     }
-  })
-  return boolean;
-};
-module.exports = count_same_elements;
+  }
+  return result;
+}
+
+function find(collection, ch) {
+  for (let item of collection) {
+    if (item.key === ch) {
+      return item;
+    }
+  }
+  return null;
+}
+
+function summarize(collection) {
+  var result = [];
+  for (let item of collection) {
+    let obj = find(result, item);
+    if (obj) {
+      obj.count++;
+    } else {
+      result.push({key: item, count: 1});
+    }
+  }
+  return result;
+}
+
+module.exports = function countSameElements(collection) {
+  let expandedArray = expand(collection);
+  return summarize(expandedArray);
+}

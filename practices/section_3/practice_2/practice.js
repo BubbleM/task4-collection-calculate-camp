@@ -1,23 +1,23 @@
-function create_updated_collection(collection_a, object_b) {
-  collectionA.map((a) => {
-    if (exist(a.key, objectB)) cut3_1(a);
-  })
-  return collectionA;
-}
+'use strict';
 
-/*
- * 对当前对象的count执行满3减1操作
- * @obj 对象形如{key: 'a', count: 3}
- * */
-let cut3_1 = (obj) => {
-  let count = Math.floor(obj.count / 3);
-  for (let i = 0; i < count; i++) {
-    obj.count--;
+function includes(collection, ch) {
+  for (let item of collection) {
+    if (item === ch) {
+      return true;
+    }
   }
+  return false;
 }
 
-let exist = (a, object) => {
-  if (object.value.indexOf(a) !== -1) return true;
-  return false
-};
-module.exports = create_updated_collection;
+module.exports = function createUpdatedCollection(collectionA, objectB) {
+  var result = [];
+  for (let item of collectionA) {
+    let key = item.key;
+    let count = item.count;
+    if (includes(objectB.value, item.key)) {
+      count = count - Math.floor(count / 3);
+    }
+    result.push({key, count});
+  }
+  return result;
+}
