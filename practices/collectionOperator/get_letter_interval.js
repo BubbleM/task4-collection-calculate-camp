@@ -18,5 +18,4 @@ function get_interval (number_max, number_min) {
 	return arr;
 }
 
-
 module.exports = get_letter_interval;

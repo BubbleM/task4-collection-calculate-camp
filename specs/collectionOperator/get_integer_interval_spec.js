@@ -4,8 +4,8 @@ var get_integer_interval = require('../../practices/collectionOperator/get_lette
 
 describe('get_integer_interval', function () {
 
-  var collection_a = [1, 2, 3, 4, 5];
-  var collection_b = [5, 4, 3, 2, 1];
+  var collection_a = [ 1, 2, 3, 4, 5 ];
+  var collection_b = [ 5, 4, 3, 2, 1 ];
 
   it('根据给出的两个数字得到一个自增1的数字区间', function() {
 
